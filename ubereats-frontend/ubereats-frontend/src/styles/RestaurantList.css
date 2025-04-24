@@ -1,0 +1,66 @@
+.restaurant-page {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .hamburger {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .logo {
+    font-size: 24px;
+  }
+  
+  .nav-options {
+    display: flex;
+    align-items: center;
+  }
+  
+  .btn {
+    margin: 0 10px;
+    padding: 8px 16px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .search-bar {
+    padding: 8px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+  }
+  
+  .categories {
+    display: flex;
+    overflow-x: auto;
+    padding: 15px 0;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  
+  .restaurant-list {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+/*   
+  .mb-4, .my-4 {
+    width: 100% !important
+  } */

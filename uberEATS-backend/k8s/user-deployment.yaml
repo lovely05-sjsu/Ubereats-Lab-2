@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1  # Set to scale the service
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: mansi061202/ubereats-backend-user-service:latest # Use the name of your Docker image
+          ports:
+            - containerPort: 2001
+          env:
+            - name: PORT
+              value: "2001"
+            - name: DB_HOST
+              value: mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: mysql
+            - name: DB_NAME
+              value: ubereats_db
+            - name: DB_DIALECT
+              value: mysql

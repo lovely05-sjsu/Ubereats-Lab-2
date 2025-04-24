@@ -1,0 +1,43 @@
+/* Home.css */
+
+/* Full-screen background */
+.home-container {
+  height: 100vh;
+  background-image: url('/public/images/image2.jpg'); /* Correct path to the image in public/images */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Styling for the main heading */
+.home-title {
+  font-weight: bold;
+  font-size: 4rem;
+  font-family: 'Arial', sans-serif;
+  color: white;
+}
+
+/* Styling for the subtitle */
+.home-subtitle {
+  font-weight: bold;
+  font-size: 2rem;
+  font-family: 'Arial', sans-serif;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+/* Styling for the Sign-Up link beside 'Browse Restaurants' */
+.home-signup-link {
+  color: #007BFF;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.home-signup-link:hover {
+  text-decoration: underline;
+}

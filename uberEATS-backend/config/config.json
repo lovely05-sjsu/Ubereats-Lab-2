@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "Psswd",
+    "database": "ubereats_db",
+    "host": "mysql",
+    "dialect": "mysql"    
+  },
+  "test": {
+    "username": "root",
+    "password": "Psswd",
+    "database": "ubereats_db",
+    "host": "mysql",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "Psswd",
+    "database": "ubereats_db",
+    "host": "mysql",
+    "dialect": "mysql"
+  }
+}
