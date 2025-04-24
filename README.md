@@ -6,4 +6,6 @@
 6. If any issue, drop all tables and run GET http://localhost:2000/sync
 7. If no records still exist in DB, run Insert.sql command from SQL folder
 8. On Front end UI, click Save Address to save address
-9. Click on login and enter login credentials. See 
+9. Click on login and enter login credentials. See
+--------------------mansi------------------------
+(replace Psswd with your orignal password)
