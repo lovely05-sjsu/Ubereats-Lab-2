@@ -14,23 +14,21 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: mansi061202/ubereats-backend-order-service:latest
+          image: mydocker05/ubereats-backend-order-service:latest
           ports:
             - containerPort: 2003
           env:
             - name: PORT
               value: "2003"
             - name: DB_HOST
-              value: mysql
+              value: mysql-db
             - name: DB_PORT
               value: "3306"
             - name: DB_USER
               value: root
             - name: DB_PASSWORD
-              value: mysql
+              value: Bhaishashank
             - name: DB_NAME
               value: ubereats_db
             - name: DB_DIALECT
               value: mysql
-            - name: KAFKA_BROKER
-              value: kafka:9092

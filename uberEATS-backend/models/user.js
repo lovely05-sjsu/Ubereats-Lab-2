@@ -1,56 +1,68 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
-    static associate(models) {
-      // User can have many orders
-      User.hasMany(models.Order, { foreignKey: "customerId" }); 
-    }
-  }
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-  User.init({
+const { Schema } = mongoose;
+
+const userSchema = new Schema(
+  {
     name: {
-      type: DataTypes.STRING,
-      allowNull: false, // Name is required
+      type: String,
+      required: [true, 'Name is required.']
     },
     email: {
-      type: DataTypes.STRING,
-      unique: true, // Email must be unique
-      allowNull: false, // Email is required
-      validate: {
-        isEmail: true // Ensure it's a valid email
-      }
+      type: String,
+      required: [true, 'Email is required.'],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/\S+@\S+\.\S+/, 'Please use a valid email address.']
     },
     password: {
-      type: DataTypes.STRING,
-      allowNull: false, 
+      type: String,
+      required: [true, 'Password is required.']
     },
-    address:{
-      type: DataTypes.STRING,
-      allowNull: false, 
+    address: {
+      type: String,
+      required: [true, 'Address is required.']
     },
     country: {
-      type: DataTypes.STRING,
-      allowNull: false, // Country is required
+      type: String,
+      required: [true, 'Country is required.']
     },
     state: {
-      type: DataTypes.STRING,
-      allowNull: false, // State is required
+      type: String,
+      required: [true, 'State is required.']
     },
     type: {
-      type: DataTypes.STRING,
-      allowNull: false, // Type could indicate if user is a customer or restaurant
-      validate: {
-        isIn: [['customer', 'restaurant']] // Ensure it's either customer or restaurant
+      type: String,
+      required: [true, 'User type is required.'],
+      enum: {
+        values: ['customer', 'restaurant'],
+        message: 'User type must be either customer or restaurant.'
       }
     }
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
+  },
+  { timestamps: true }
+);
 
-  return User;
+// Pre-save middleware to hash the password if it has been modified (or is new)
+userSchema.pre('save', async function (next) {
+  try {
+    if (!this.isModified('password')) return next();
+    // Generate a salt and hash the password using bcrypt
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Instance method to compare a plaintext password with the hashed password
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
 };
+
+module.exports = mongoose.model('User', userSchema);

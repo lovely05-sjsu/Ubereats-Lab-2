@@ -1,25 +1,40 @@
-'use strict';
-const { Model } = require('sequelize');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-module.exports = (sequelize, DataTypes) => {
-  class OrderItem extends Model {
-    static associate(models) {
-      OrderItem.belongsTo(models.Order, { foreignKey: "orderId" });
-    }
-  }
-  
-  OrderItem.init({
-    orderId: { type: DataTypes.INTEGER, allowNull: false },
-    menuItemId: { type: DataTypes.INTEGER, allowNull: false },
-    name: { type: DataTypes.STRING, allowNull: false },
-    description: { type: DataTypes.STRING },
-    image: { type: DataTypes.STRING },
-    price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-    quantity: { type: DataTypes.INTEGER, allowNull: false },
-  }, {
-    sequelize,
-    modelName: 'OrderItem',  // Ensuring correct naming
-  });
+const orderItemSchema = new Schema(
+  {
+    // Reference to the parent Order document
+    orderId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'Order',
+      required: true
+    },
+    // Reference to a MenuItem document (if you plan to populate it)
+    menuItemId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'MenuItem',
+      required: true
+    },
+    name: { 
+      type: String, 
+      required: [true, 'Name is required'] 
+    },
+    description: { 
+      type: String 
+    },
+    image: { 
+      type: String 
+    },
+    price: { 
+      type: Number, 
+      required: [true, 'Price is required'] 
+    },
+    quantity: { 
+      type: Number, 
+      required: [true, 'Quantity is required'] 
+    },
+  },
+  { timestamps: true } // Automatically add createdAt and updatedAt
+);
 
-  return OrderItem;
-};
+module.exports = mongoose.model('OrderItem', orderItemSchema);

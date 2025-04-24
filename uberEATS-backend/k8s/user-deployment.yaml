@@ -14,20 +14,20 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: mansi061202/ubereats-backend-user-service:latest # Use the name of your Docker image
+          image: mydocker05/ubereats-backend-user-service:latest # Use the name of your Docker image
           ports:
             - containerPort: 2001
           env:
             - name: PORT
               value: "2001"
             - name: DB_HOST
-              value: mysql
+              value: mysql-db
             - name: DB_PORT
               value: "3306"
             - name: DB_USER
               value: root
             - name: DB_PASSWORD
-              value: mysql
+              value: Bhaishashank
             - name: DB_NAME
               value: ubereats_db
             - name: DB_DIALECT

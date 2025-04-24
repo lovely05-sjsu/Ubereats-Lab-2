@@ -1,23 +1,11 @@
 {
   "development": {
-    "username": "root",
-    "password": "Psswd",
-    "database": "ubereats_db",
-    "host": "mysql",
-    "dialect": "mysql"    
+    "uri": "mongodb://localhost:27017/ubereats_db"
   },
   "test": {
-    "username": "root",
-    "password": "Psswd",
-    "database": "ubereats_db",
-    "host": "mysql",
-    "dialect": "mysql"
+    "uri": "mongodb://localhost:27017/ubereats_db"
   },
   "production": {
-    "username": "root",
-    "password": "Psswd",
-    "database": "ubereats_db",
-    "host": "mysql",
-    "dialect": "mysql"
+    "uri": "mongodb://localhost:27017/ubereats_db"
   }
 }

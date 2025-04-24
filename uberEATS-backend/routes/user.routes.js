@@ -14,7 +14,7 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ where: { email } });
+  const user = await User.findOne( { email } );
   if (user && (await bcrypt.compare(password, user.password))) {
     req.session.user = user;
     res.json({ message: "Login successful" });
@@ -28,9 +28,7 @@ router.get("/profile/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    const customer = await User.findOne({
-      where: { id },
-    });
+    const customer = await User.findById(id);
 
     if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
@@ -62,17 +60,16 @@ router.put("/profile/:id", async (req, res) => {
       state,
     };
 
-    // Find the customer by ID
-    const customer = await User.findOne({
-      where: { id },
-    });
+    // Find the customer by ID and update their details
+    const customer = await User.findByIdAndUpdate(id, updateData, { new: true });
+    //const customer = await User.findById(id);
 
     if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
     }
 
     // Update customer details with the data from the request body
-    await customer.update(updateData);
+    //await customer.update(updateData);
 
     // Return the updated customer details
     res.json({ message: "Customer updated successfully", customer });
@@ -81,7 +78,5 @@ router.put("/profile/:id", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-
 
 module.exports = router;

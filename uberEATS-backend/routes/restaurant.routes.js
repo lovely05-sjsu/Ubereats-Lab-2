@@ -2,18 +2,19 @@ const express = require('express');
 const { deleteMenuItem, updateRestaurantProfile,GetRestaurantOrders, createRestaurantMenu,createRestaurant, getRestaurants, getRestaurantsDashboard,getRestaurantDetail,createRestaurantProfile, getRestaurantMenus,getRestaurantStats,favoriteRestaurant } = require('../controllers/restaurant.controller');
 const RestaurantProfile = require('../models/restaurantProfile');
 const router = express.Router();
-const mysql = require('mysql2/promise');
+/*const mysql = require('mysql2/promise')*/
 const bcrypt = require('bcryptjs'); 
 
-const pool = mysql.createPool({
-  host: 'mysql',
+/*const pool = mysql.createPool({
+  host: 'mysql-db',
   user: 'root',
-  password: 'Psswd',
+  password: 'Bhaishashank',
   database: 'ubereats_db',
-});
+});*/
 
 // router.post("/", createRestaurant);
 router.get("/getRestaurantsDashboard", getRestaurantsDashboard);
+router.get("/getRestaurantDetails/:id", getRestaurantDetail);
 router.get("/:id", getRestaurantDetail);
 router.get('/restaurants', getRestaurants);
 router.get("/getRestaurantDetails/:id", getRestaurantDetail);
@@ -25,11 +26,33 @@ router.post("/signup", createRestaurantProfile);
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log(email);
+  console.log("Login attempt for email:", email);
+
+  try {
+    // Find a restaurant document by email
+    const restaurant = await RestaurantProfile.findOne({ email: email });
+    
+    if (restaurant) {
+      // Compare the provided password with the hashed password in the DB
+      if (await bcrypt.compare(password, restaurant.password)) {
+        // Save the restaurant ID in the session (assuming you have session middleware set up)
+        req.session.restaurant = restaurant._id;
+        res.json({ message: "Login successful", restaurantId: restaurant._id });
+      } else {
+        res.status(401).json({ error: "Invalid credentials" });
+      }
+    } else {
+      res.status(401).json({ error: "Invalid credentials" });
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 //   console.log(RestaurantProfile);
  // res.json({ message: "Login successful" , restaurantId: });
 
- const [rows] = await pool.execute('SELECT * FROM restaurantProfile WHERE email = ?', [email]);
+ /*const [rows] = await pool.execute('SELECT * FROM restaurantProfile WHERE email = ?', [email]);
     // rows.length ? rows[0] : null; 
     if(rows.length )
     {
@@ -40,7 +63,7 @@ router.post("/login", async (req, res) => {
       } else {
         res.status(401).json({ error: "Invalid credentials" });
       }
-    }
+    }*/
 
   //  const restaurant = await RestaurantProfile.findOne({ where: { email } });
   //   if (restaurant && (await bcrypt.compare(password, restaurant.password))) {
@@ -56,7 +79,7 @@ router.post("/login", async (req, res) => {
 //   } else {
 //     res.status(401).json({ error: "Invalid credentials" });
 //   }
-});
+
 
 
 // router.get('/', getRestaurants);

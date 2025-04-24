@@ -9,6 +9,7 @@ const {
   Favorite,
 } = require("../models");
 const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
 
 // Create a new restaurant
 exports.createRestaurant = async (req, res) => {
@@ -122,23 +123,11 @@ exports.favoriteRestaurant = async (req, res) => {
 };
 
 
-
-
+// Get all restaurants for dashboard
 exports.getRestaurantsDashboard = async (req, res) => {
   try {
     console.log('Inside restaurants dashboard');
-    const restaurants = await Restaurant.findAll({
-      include: [
-        {
-          model: MenuItem,
-          as: "menuItems",
-        },
-        {
-          model: Review,
-          as: "reviews",
-        },
-      ],
-    });
+    const restaurants = await Restaurant.find();
 
     const formattedRestaurants = restaurants.map((restaurant) => ({
       id: restaurant.id,
@@ -160,29 +149,20 @@ exports.getRestaurantsDashboard = async (req, res) => {
 
 exports.getRestaurantDetail = async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10); // Convert ID to integer
+    const { id } = req.params;
 
-    if (isNaN(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid restaurant ID" });
     }
 
-    const restaurant = await Restaurant.findOne({
-      where: { id },
-      include: [
-        {
-          model: MenuItem,
-          as: "menuItems",
-        },
-        {
-          model: Review,
-          as: "reviews",
-        },
-      ],
-    });
+    const restaurant = await Restaurant.findById(id);
 
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
+
+    const menuItems = await MenuItem.find({ restaurant_id: restaurant._id });
+    const reviews = await Review.find({ restaurant_id: restaurant._id });
 
     // Format the response
     const formattedRestaurant = {

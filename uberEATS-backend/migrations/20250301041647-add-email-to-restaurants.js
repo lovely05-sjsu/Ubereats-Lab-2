@@ -1,7 +1,7 @@
-'use strict';
+/** 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+/** module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.addColumn('Restaurants', 'email', {
       type: Sequelize.STRING,
@@ -13,4 +13,4 @@ module.exports = {
   async down (queryInterface, Sequelize) {
     return queryInterface.removeColumn('Restaurants', 'email');
   }
-};
+}; **/

@@ -1,47 +1,32 @@
-'use strict';
-const { Model } = require('sequelize');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-module.exports = (sequelize, DataTypes) => {
-  class RestaurantProfile extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // Define associations here (if needed in future)
-      // Example: RestaurantProfile.hasMany(models.Order, { foreignKey: "restaurantId" });
-    }
-  }
-
-  RestaurantProfile.init({
+const restaurantProfileSchema = new Schema(
+  {
     name: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: [true, 'Name is required.']
     },
     email: {
-      type: DataTypes.STRING, 
-      allowNull: false,
+      type: String,
+      required: [true, 'Email is required.'],
       unique: true,
+      lowercase: true,
+      trim: true,
     },
     city: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: [true, 'City is required.']
     },
     password: {
-      type: DataTypes.STRING,
-      allowNull: false, 
+      type: String,
+      required: [true, 'Password is required.']
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    }
-  }, {
-    sequelize,
-    modelName: 'RestaurantProfile',
-    tableName: 'restaurantProfile',
-    timestamps: false, // Disable updatedAt
-  });
+    // If you want to automatically store createdAt, you can use timestamps.
+  },
+  {
+    timestamps: { createdAt: true, updatedAt: false } // Only createdAt is automatically maintained.
+  }
+);
 
-  return RestaurantProfile;
-};
+module.exports = mongoose.model('RestaurantProfile', restaurantProfileSchema);

@@ -1,41 +1,35 @@
-module.exports = (sequelize, DataTypes) => {
-    const MenuItem = sequelize.define('MenuItem', {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      price: {
-        type: DataTypes.DECIMAL(5, 2),
-        allowNull: false,
-      },
-      description: {
-        type: DataTypes.STRING,
-      },
-      rating: {
-        type: DataTypes.DECIMAL(3, 1),
-        allowNull: false,
-      },
-      image: {
-        type: DataTypes.STRING,
-      },
-    }, {
-      timestamps: true,
-      tableName: 'menu_items',
-    });
-  
-    // MenuItem belongs to a single Restaurant
-    MenuItem.associate = (models) => {
-      MenuItem.belongsTo(models.Restaurant, {
-        foreignKey: 'restaurant_id',
-        as: 'restaurant',
-      });
-    };
-  
-    return MenuItem;
-  };
-  
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const menuItemSchema = new Schema(
+  {
+    name: { 
+      type: String,
+      required: [true, 'Menu item name is required']
+    },
+    price: { 
+      type: Number,
+      required: [true, 'Price is required'] 
+    },
+    description: { 
+      type: String 
+    },
+    rating: { 
+      type: Number, 
+      required: [true, 'Rating is required'], 
+      default: 0 
+    },
+    image: { 
+      type: String 
+    },
+    // Reference to the parent Restaurant document
+    restaurant: {
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant',
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model('MenuItem', menuItemSchema);

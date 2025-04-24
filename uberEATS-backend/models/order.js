@@ -1,26 +1,45 @@
-'use strict';
-const { Model } = require('sequelize');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-module.exports = (sequelize, DataTypes) => {
-  class Order extends Model {
-    static associate(models) {
-      Order.belongsTo(models.User, { foreignKey: "customerId" });
-      Order.belongsTo(models.Restaurant, { foreignKey: "restaurantId" });
-      Order.hasMany(models.OrderItem, { foreignKey: "orderId", as: "items" }); // Updated to use OrderItem
-    }
-  }
-  
-  Order.init({
-    customerId: { type: DataTypes.INTEGER, allowNull: false },
-    restaurantId: { type: DataTypes.INTEGER, allowNull: false },
-    restaurantProfileId: { type: DataTypes.INTEGER, allowNull: false },
-    address: { type: DataTypes.STRING, allowNull: false },
-    isDelivery: { type: DataTypes.BOOLEAN, allowNull: false },
-    orderStatus: { type: DataTypes.STRING, defaultValue: 'Pending' },
-  }, {
-    sequelize,
-    modelName: 'Order',
-  });
+const orderSchema = new Schema(
+  {
+    // Reference to the User who placed the order
+    customerId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'User', 
+      required: true 
+    },
+    // Reference to the Restaurant
+    restaurantId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'Restaurant', 
+      required: true 
+    },
+    // Reference to the RestaurantProfile document
+    restaurantProfileId: { 
+      type: Schema.Types.ObjectId, 
+      ref: 'RestaurantProfile', 
+      required: true 
+    },
+    address: { 
+      type: String, 
+      required: [true, 'Address is required'] 
+    },
+    isDelivery: { 
+      type: Boolean, 
+      required: [true, 'isDelivery flag is required'] 
+    },
+    orderStatus: { 
+      type: String, 
+      default: 'Pending' 
+    },
+    // Optionally, store order items as an array of OrderItem ObjectIds
+    items: [{
+      type: Schema.Types.ObjectId,
+      ref: 'OrderItem'
+    }]
+  },
+  { timestamps: true }
+);
 
-  return Order;
-};
+module.exports = mongoose.model('Order', orderSchema);

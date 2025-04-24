@@ -1,114 +1,71 @@
-version: '3.8'
 
 services:
   user-service:
-    build: 
-      context: .
+    build: .
     container_name: user-service
     environment:
       - PORT=2001
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=Psswd
-      - DB_NAME=ubereats_db
-      - DB_DIALECT=mysql
-      - KAFKA_BROKER=kafka:9092
+      - MONGO_URI=mongodb://root:Bhaishashank@mongo-db:27017/ubereats_db?authSource=admin
+      - SESSION_SECRET=ubereats-secret
+      - FRONTEND_URL=http://localhost:3000
     ports:
       - "2001:2001"
     depends_on:
-      db:
-        condition: service_healthy
+      - mongo-db
     networks:
       - ubereats-network
     command: ["node", "index.js"]
 
   restaurant-service:
-    build: 
-      context: .
+    build: .
     container_name: restaurant-service
     environment:
       - PORT=2002
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=Psswd
-      - DB_NAME=ubereats_db
-      - DB_DIALECT=mysql
-      - KAFKA_BROKER=kafka:9092
+      - MONGO_URI=mongodb://root:Bhaishashank@mongo-db:27017/ubereats_db?authSource=admin
+      - SESSION_SECRET=ubereats-secret
+      - FRONTEND_URL=http://localhost:3000
     ports:
       - "2002:2002"
     depends_on:
-      - db
-      - kafka
+      - mongo-db
     networks:
       - ubereats-network
     command: ["node", "index.js"]
 
   order-service:
-    build: 
-      context: .
+    build: .
     container_name: order-service
     environment:
       - PORT=2003
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=Psswd
-      - DB_NAME=ubereats_db
-      - DB_DIALECT=mysql
-      - KAFKA_BROKER=kafka:9092
+      - MONGO_URI=mongodb://root:Bhaishashank@mongo-db:27017/ubereats_db?authSource=admin
+      - SESSION_SECRET=ubereats-secret
+      - FRONTEND_URL=http://localhost:3000
     ports:
       - "2003:2003"
     depends_on:
-      - db
-      - kafka
+      - mongo-db
     networks:
       - ubereats-network
     command: ["node", "index.js"]
 
-  db:
-    image: mysql:8
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: Psswd
-      MYSQL_DATABASE: ubereats_db
+  mongo-db:
+    image: mongo:latest
+    container_name: mongo-db
     ports:
-      - "3307:3306"
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=Bhaishashank
+      - MONGO_INITDB_DATABASE=ubereats_db
+    command: mongod --bind_ip_all 
     networks:
       - ubereats-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "mongosh --username root --password Bhaishashank --authenticationDatabase admin --eval \"db.adminCommand('ping')\" || exit 1"]
       interval: 30s
       retries: 3
-      start_period: 5s
+      start_period: 10s
       timeout: 10s
-
-  zookeeper:
-    image: bitnami/zookeeper:latest
-    container_name: zookeeper
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-    ports:
-      - "2181:2181"
-    networks:
-      - ubereats-network
-
-  kafka:
-    image: bitnami/kafka:latest
-    container_name: kafka
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    ports:
-      - "9092:9092"
-    depends_on:
-      - zookeeper
-    networks:
-      - ubereats-network
 
 networks:
   ubereats-network:

@@ -53,7 +53,7 @@ const login = async (req, res) => {
         }
 
         // Find user by email
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne( { email } );
 
         // If user doesn't exist or password doesn't match
         // if (!user || !(await bcrypt.compare(password, user.password))) {

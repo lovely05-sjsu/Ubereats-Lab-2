@@ -3,38 +3,45 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const path = require("path");
-const { sequelize } = require('./models');
-const db = require('./models');
-const { Restaurant, MenuItem, Review, Favorite } = require('./models/index');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 
-// Kafka utilities
-const { kafka } = require('./utils/kafka'); // We'll create this file
-const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: 'restaurant-group' }); // One group per consumer service
+// MongoDB Connection
+const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/ubereats_db';
+
+mongoose.connect(mongoURI)
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 const app = express();
 
-// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({
-    origin: "http://localhost:3000",
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
-}));
+  })
+);
 
-app.use(session({
-    secret: "ubereats-secret",
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'ubereats-secret',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: mongoURI,
+    }),
     cookie: {
-        secure: false,
-        httpOnly: true,
-        sameSite: "lax",
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
     },
-}));
+  })
+);
 
 // Routes
 const authRoutes = require('./routes/auth.routes');
@@ -51,82 +58,34 @@ app.use("/api/users", userRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Static file serving
+app.get('/', (req, res) => {    
+  res.send('UberEats API is running!');
+});
+
+// Static files for images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// DEBUG: List all routes
-app.get('/debug/routes', (req, res) => {
-    const routePaths = app._router.stack
-        .filter(r => r.route)
-        .map(r => r.route.path);
-    res.send(routePaths);
-});
+// Connect Kafka Producer (Order Service)
+/*const { connectProducer } = require('./Kafka/orderServiceKafkaProducer');
+(async () => {
+  try {
+    await connectProducer();
+    console.log('Kafka producer connected');
+  } catch (error) {
+    console.error('Could not connect Kafka producer:', error);
+  }
+})();
 
-// Root routes
-app.get('/', async (req, res) => {
-    res.send('UberEats API is running with Kafka integration!');
-});
+// Connect Kafka Consumer for Restaurant Service
+const { connectConsumer } = require('./Kafka/restaurantKafkaConsumer');
+(async () => {
+  try {
+    await connectConsumer();
+    console.log('Kafka consumer is connected.');
+  } catch (error) {
+    console.error('Error connecting Kafka consumer:', error);
+  }
+})(); */
 
-app.get('/sync', async (req, res) => {
-    try {
-        await db.sequelize.sync({ force: true });
-        res.send('Tables synced successfully!');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error syncing tables');
-    }
-});
-app.get('/health', (req, res) => {
-    res.send('OK');
-  });
-// Kafka test route (optional)
-app.post('/api/orders/publish-test', async (req, res) => {
-    try {
-        const orderData = { orderId: Date.now(), restaurantId: 123, userId: 456 };
-        await producer.send({
-            topic: 'order_created',
-            messages: [{ value: JSON.stringify(orderData) }],
-        });
-        res.send("Order event published to Kafka!");
-    } catch (err) {
-        console.error("Kafka publish error:", err);
-        res.status(500).send("Failed to publish Kafka message");
-    }
-});
-
-
-// Start the app
 const PORT = process.env.PORT || 2000;
-
-const startServer = async () => {
-    try {
-        await sequelize.sync();
-
-        await producer.connect();
-        console.log("✅ Kafka Producer connected");
-
-        await consumer.connect();
-        console.log("✅ Kafka Consumer connected");
-
-        // Subscribe to order events
-        await consumer.subscribe({ topic: 'order_created', fromBeginning: true });
-
-        // Define consumer behavior
-        await consumer.run({
-            eachMessage: async ({ topic, partition, message }) => {
-                const order = JSON.parse(message.value.toString());
-                console.log(`📦 [Kafka] Received order:`, order);
-                // Here you could: update restaurant queue, notify staff, etc.
-            },
-        });
-
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on http://localhost:${PORT}`);
-        });
-
-    } catch (err) {
-        console.error("Startup error:", err);
-    }
-};
- 
-startServer();
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,34 +1,31 @@
-module.exports = (sequelize, DataTypes) => {
-    const Review = sequelize.define('Review', {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      user: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      rating: {
-        type: DataTypes.DECIMAL(3, 1),
-        allowNull: false,
-      },
-      comment: {
-        type: DataTypes.TEXT,
-      },
-    }, {
-      timestamps: true,
-      tableName: 'reviews',
-    });
-  
-    // Review belongs to a single Restaurant
-    Review.associate = (models) => {
-      Review.belongsTo(models.Restaurant, {
-        foreignKey: 'restaurant_id',
-        as: 'restaurant',
-      });
-    };
-  
-    return Review;
-  };
-  
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+// Define the review schema.
+const reviewSchema = new Schema(
+  {
+    // No need for an explicit "id" field because MongoDB provides _id automatically.
+    user: {
+      type: String,
+      required: [true, 'User is required.'],
+    },
+    rating: {
+      type: Number,
+      required: [true, 'Rating is required.'],
+    },
+    comment: {
+      type: String,
+    },
+    // Instead of Sequelize associations, add a reference field
+    restaurant: {
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant',
+      required: [true, 'A restaurant reference is required.'],
+    },
+  },
+  {
+    timestamps: true, // Automatically adds createdAt and updatedAt.
+  }
+);
+
+module.exports = mongoose.model('Review', reviewSchema);

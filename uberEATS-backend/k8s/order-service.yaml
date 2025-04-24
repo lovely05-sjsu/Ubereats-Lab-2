@@ -7,6 +7,6 @@ spec:
     app: order-service
   ports:
     - protocol: TCP
-      port: 2003
+      port: 80
       targetPort: 2003
-  type: LoadBalancer  # ✅ Change this!
+  type: ClusterIP

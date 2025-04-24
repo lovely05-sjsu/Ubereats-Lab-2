@@ -1,41 +1,22 @@
-const { Model, DataTypes } = require("sequelize");
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-module.exports = (sequelize) => {
-  class Favorites extends Model {}
-
-  Favorites.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      customerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Users", // Ensure this matches the actual table name
-          key: "id",
-        },
-        onDelete: "CASCADE",
-      },
-      restaurantId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "restaurants", // Ensure this matches the actual table name
-          key: "id",
-        },
-        onDelete: "CASCADE",
-      },
+const favoritesSchema = new Schema(
+  {
+    // Reference to the customer (User)
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Customer is required']
     },
-    {
-      sequelize,
-      modelName: "Favorites",
-      tableName: "favorites",
-      timestamps: true,
-    }
-  );
+    // Reference to the Restaurant
+    restaurantId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant',
+      required: [true, 'Restaurant is required']
+    },
+  },
+  { timestamps: true }
+);
 
-  return Favorites;
-};
+module.exports = mongoose.model('Favorites', favoritesSchema);

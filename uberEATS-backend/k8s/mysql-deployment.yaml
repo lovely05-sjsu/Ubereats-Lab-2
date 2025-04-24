@@ -13,12 +13,22 @@ spec:
         app: mysql
     spec:
       containers:
-        - name: mysql
-          image: mysql:8
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: mysql
-            - name: MYSQL_DATABASE
-              value: ubereats_db
-          ports:
-            - containerPort: 3306
+      - name: mysql
+        image: mysql:8.0  # Consider using a stable tag rather than latest 8.4.4
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "Bhaishashank"
+        - name: MYSQL_DATABASE
+          value: "ubereats_db"
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
