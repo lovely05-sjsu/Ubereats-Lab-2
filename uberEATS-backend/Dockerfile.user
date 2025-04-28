@@ -1,0 +1,25 @@
+# Use Node.js LTS version
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose user service port
+EXPOSE 2001
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=2001
+ENV SERVICE_TYPE=user
+
+# Start the user service
+CMD ["node", "services/user.service.js"] 

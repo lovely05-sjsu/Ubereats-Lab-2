@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    container_name: ubereats-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - USER_SERVICE_URL=http://user-service:3001
+      - RESTAURANT_SERVICE_URL=http://restaurant-service:3002
+      - ORDER_SERVICE_URL=http://order-service:3003
+    networks:
+      - ubereats-backend_ubereats-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  ubereats-backend_ubereats-network:
+    external: true

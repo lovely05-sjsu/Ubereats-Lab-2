@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: user-service
 spec:
-  replicas: 1  # Set to scale the service
+  replicas: 1
   selector:
     matchLabels:
       app: user-service
@@ -14,21 +14,17 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: mydocker05/ubereats-backend-user-service:latest # Use the name of your Docker image
+          image: mydocker05/ubereats-backend-user-service:latest
           ports:
             - containerPort: 2001
           env:
             - name: PORT
               value: "2001"
-            - name: DB_HOST
-              value: mysql-db
-            - name: DB_PORT
-              value: "3306"
-            - name: DB_USER
-              value: root
-            - name: DB_PASSWORD
-              value: Bhaishashank
-            - name: DB_NAME
-              value: ubereats_db
-            - name: DB_DIALECT
-              value: mysql
+            - name: MONGO_URI
+              value: "mongodb://mongo-db:27017/ubereats_db"
+            - name: SESSION_SECRET
+              value: "ubereats-secret"
+            - name: FRONTEND_URL
+              value: "http://localhost:3000"
+            - name: KAFKA_BROKERS
+              value: "kafka:9092"

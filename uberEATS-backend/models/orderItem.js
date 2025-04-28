@@ -11,7 +11,7 @@ const orderItemSchema = new Schema(
     },
     // Reference to a MenuItem document (if you plan to populate it)
     menuItemId: { 
-      type: Schema.Types.ObjectId, 
+      type: mongoose.Schema.Types.ObjectId, 
       ref: 'MenuItem',
       required: true
     },

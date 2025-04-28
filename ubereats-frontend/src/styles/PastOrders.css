@@ -1,0 +1,24 @@
+.orders-list {
+    padding: 20px;
+  }
+  
+  .order-card {
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    padding: 20px;
+  }
+  
+  .order-items {
+    margin-top: 20px;
+  }
+  
+  .order-item {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .order-item img {
+    margin-right: 10px;
+  }
+  

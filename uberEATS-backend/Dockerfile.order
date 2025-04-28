@@ -1,0 +1,25 @@
+# Use Node.js LTS version
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose order service port
+EXPOSE 2003
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=2003
+ENV SERVICE_TYPE=order
+
+# Start the order service
+CMD ["node", "services/order.service.js"] 

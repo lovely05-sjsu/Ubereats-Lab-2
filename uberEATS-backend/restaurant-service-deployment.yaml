@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-service
+  template:
+    metadata:
+      labels:
+        app: restaurant-service
+    spec:
+      containers:
+      - name: restaurant-service
+        image: restaurant-service:latest
+        imagePullPolicy: Never
+        env:
+        - name: KAFKA_BROKERS
+          value: "kafka:9092"
+        - name: MONGODB_URI
+          value: "mongodb://mongo-db:27017/ubereats_db"
+        - name: NODE_ENV
+          value: "development"
+      volumes:
+      - name: app-code
+        configMap:
+          name: restaurant-service-code 

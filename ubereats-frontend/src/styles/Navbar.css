@@ -1,0 +1,46 @@
+.navbar {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .menu {
+    display: flex;
+  }
+  
+  .menu a {
+    margin-left: 10px;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .menu-btn {
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .menu.open {
+    display: block;
+  }
+  
+  .menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background-color: #333;
+    width: 100%;
+    padding: 20px;
+  }
+  
+  .menu a {
+    display: block;
+    margin-bottom: 10px;
+  }
+  

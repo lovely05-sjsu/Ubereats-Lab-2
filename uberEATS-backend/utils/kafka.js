@@ -1,35 +1,29 @@
 const { Kafka } = require('kafkajs');
 
 const kafka = new Kafka({
-  clientId: 'ubereats-app',
-  brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
+  clientId: process.env.KAFKA_CLIENT_ID || 'order-service',
+  brokers: (process.env.KAFKA_BROKERS || 'kafka:9092').split(','),
 });
 
 const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: 'restaurant-group' });
+const consumer = kafka.consumer({ 
+  groupId: process.env.KAFKA_GROUP_ID || 'order-service-group' 
+});
 
 const connectKafka = async () => {
   try {
-    if (!producer.isConnected()) {
-      await producer.connect();
-      console.log("✅ Kafka producer connected (from utils)");
-    }
-
-    if (!consumer.isConnected()) {
-      await consumer.connect();
-      console.log("✅ Kafka consumer connected (from utils)");
-    }
-  } catch (err) {
-    console.error("❌ Kafka connection error (from utils):", err);
+    await producer.connect();
+    await consumer.connect();
+    console.log('✅ Kafka producer and consumer connected successfully');
+  } catch (error) {
+    console.error('❌ Kafka connection error:', error);
+    throw error;
   }
 };
-
-// Call it immediately
-connectKafka();
 
 module.exports = {
   kafka,
   producer,
   consumer,
   connectKafka,
-};
+}; 

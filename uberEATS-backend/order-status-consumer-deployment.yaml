@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-status-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-status-consumer
+  template:
+    metadata:
+      labels:
+        app: order-status-consumer
+    spec:
+      containers:
+      - name: order-status-consumer
+        image: order-status-consumer:latest
+        imagePullPolicy: Never
+        env:
+        - name: KAFKA_BROKERS
+          value: "kafka:9092"
+        - name: MONGODB_URI
+          value: "mongodb://mongo-db:27017/ubereats_db"
+        - name: NODE_ENV
+          value: "development"
+      volumes:
+      - name: app-code
+        configMap:
+          name: order-status-consumer-code 

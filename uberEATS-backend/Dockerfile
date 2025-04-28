@@ -1,20 +1,26 @@
-# Use the official Node.js image as base
-FROM node:18
+# Use Node.js LTS version
+FROM node:18-alpine
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the entire backend source code to the container
+# Copy source code
 COPY . .
 
-# Expose the port on which your backend runs
-EXPOSE 2000
+# Expose ports for different services
+EXPOSE 2001
+EXPOSE 2002
+EXPOSE 2003
 
-# Define the command to start the backend server
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=2001
+
+# Start the application
 CMD ["node", "index.js"]

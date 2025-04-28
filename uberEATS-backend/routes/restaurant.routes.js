@@ -1,5 +1,5 @@
 const express = require('express');
-const { deleteMenuItem, updateRestaurantProfile,GetRestaurantOrders, createRestaurantMenu,createRestaurant, getRestaurants, getRestaurantsDashboard,getRestaurantDetail,createRestaurantProfile, getRestaurantMenus,getRestaurantStats,favoriteRestaurant } = require('../controllers/restaurant.controller');
+const { deleteMenuItem, updateRestaurantProfile,GetRestaurantOrders, createRestaurantMenu,createRestaurant, getRestaurants, getRestaurantsDashboard,getRestaurantDetail,createRestaurantProfile, getRestaurantMenus,getRestaurantStats,favoriteRestaurant,updateRestaurantMenuItem } = require('../controllers/restaurant.controller');
 const RestaurantProfile = require('../models/restaurantProfile');
 const router = express.Router();
 /*const mysql = require('mysql2/promise')*/
@@ -15,9 +15,9 @@ const bcrypt = require('bcryptjs');
 // router.post("/", createRestaurant);
 router.get("/getRestaurantsDashboard", getRestaurantsDashboard);
 router.get("/getRestaurantDetails/:id", getRestaurantDetail);
-router.get("/:id", getRestaurantDetail);
 router.get('/restaurants', getRestaurants);
-router.get("/getRestaurantDetails/:id", getRestaurantDetail);
+router.get("/:id", getRestaurantDetail);
+//router.get("/getRestaurantDetails/:id", getRestaurantDetail);
 router.post('/favoriteRestaurant',favoriteRestaurant);
 
 // router.get('/:restaurantId', getRestaurants);
@@ -89,5 +89,5 @@ router.get('/:restaurantProfileId/orders', GetRestaurantOrders);
 router.get('/:restaurantProfileId/getRestaurantStats', getRestaurantStats);
 router.put("/:restaurantProfileId/profile", updateRestaurantProfile);
 router.delete("/menu/:menuId",deleteMenuItem );
-
+router.put("/menu/:editDishId", updateRestaurantMenuItem )
 module.exports = router;

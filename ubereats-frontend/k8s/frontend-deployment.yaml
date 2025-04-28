@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubereats-frontend
+  labels:
+    app: ubereats-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ubereats-frontend
+  template:
+    metadata:
+      labels:
+        app: ubereats-frontend
+    spec:
+      containers:
+      - name: ubereats-frontend
+        image: ubereats-frontend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: USER_SERVICE_URL
+          value: "http://user-service:2001"
+        - name: RESTAURANT_SERVICE_URL
+          value: "http://restaurant-service:2002"
+        - name: ORDER_SERVICE_URL
+          value: "http://order-service:2003"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ubereats-frontend
+spec:
+  selector:
+    app: ubereats-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer 

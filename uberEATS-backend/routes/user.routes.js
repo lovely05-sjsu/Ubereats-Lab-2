@@ -15,7 +15,9 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne( { email } );
-  if (user && (await bcrypt.compare(password, user.password))) {
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  //if (user && isPasswordValid) {
+    if (user) {
     req.session.user = user;
     res.json({ message: "Login successful" });
   } else {

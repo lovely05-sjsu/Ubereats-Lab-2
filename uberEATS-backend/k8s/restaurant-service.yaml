@@ -7,6 +7,6 @@ spec:
     app: restaurant-service
   ports:
     - protocol: TCP
-      port: 80
+      port: 2002
       targetPort: 2002
-  type: ClusterIP
+  type: NodePort

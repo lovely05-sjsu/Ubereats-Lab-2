@@ -17,8 +17,8 @@ const reviewSchema = new Schema(
       type: String,
     },
     // Instead of Sequelize associations, add a reference field
-    restaurant: {
-      type: Schema.Types.ObjectId,
+    restaurant_id: {
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Restaurant',
       required: [true, 'A restaurant reference is required.'],
     },

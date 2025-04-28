@@ -1,23 +1,24 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const OrderStatus = require('../constants/orderStatus');
 
 const orderSchema = new Schema(
   {
     // Reference to the User who placed the order
     customerId: { 
-      type: Schema.Types.ObjectId, 
+      type: mongoose.Schema.Types.ObjectId, 
       ref: 'User', 
       required: true 
     },
     // Reference to the Restaurant
     restaurantId: { 
-      type: Schema.Types.ObjectId, 
+      type: mongoose.Schema.Types.ObjectId, 
       ref: 'Restaurant', 
       required: true 
     },
     // Reference to the RestaurantProfile document
     restaurantProfileId: { 
-      type: Schema.Types.ObjectId, 
+      type: mongoose.Schema.Types.ObjectId, 
       ref: 'RestaurantProfile', 
       required: true 
     },
@@ -31,11 +32,12 @@ const orderSchema = new Schema(
     },
     orderStatus: { 
       type: String, 
-      default: 'Pending' 
+      enum: Object.values(OrderStatus),
+      default: OrderStatus.PENDING 
     },
     // Optionally, store order items as an array of OrderItem ObjectIds
     items: [{
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'OrderItem'
     }]
   },

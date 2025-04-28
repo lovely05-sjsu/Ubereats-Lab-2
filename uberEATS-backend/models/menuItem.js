@@ -23,8 +23,8 @@ const menuItemSchema = new Schema(
       type: String 
     },
     // Reference to the parent Restaurant document
-    restaurant: {
-      type: Schema.Types.ObjectId,
+    restaurant_id: {
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Restaurant',
       required: true,
     },

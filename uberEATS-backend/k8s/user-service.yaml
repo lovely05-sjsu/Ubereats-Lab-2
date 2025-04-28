@@ -7,6 +7,6 @@ spec:
     app: user-service
   ports:
     - protocol: TCP
-      port: 80
+      port: 2001
       targetPort: 2001
-  type: ClusterIP  # Change to LoadBalancer if exposing outside the cluster
+  type: NodePort

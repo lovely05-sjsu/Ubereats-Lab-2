@@ -1,0 +1,13 @@
+FROM node:18
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+RUN npm install dotenv express express-session mongoose cors connect-mongo kafkajs express-rate-limit helmet
+
+COPY . .
+
+EXPOSE 2003
+
+CMD ["node", "services/order.service.js"] 
